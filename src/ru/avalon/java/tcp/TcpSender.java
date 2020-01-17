@@ -1,8 +1,7 @@
 package ru.avalon.java.tcp;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketAddress;
+import java.net.*;
+import java.io.*;
 
 /**
  * Упражнение на выработку базовых умений использования
@@ -21,6 +20,9 @@ public final class TcpSender {
         Socket socket = connect(address);
         // 4. Отправляем сообщение
         send(socket, message);
+        // 6. ждем ответа;
+       String response = response(socket);
+        System.out.println(response);
         // 5. Закрываем соединеие
         socket.close();
     }
@@ -34,7 +36,7 @@ public final class TcpSender {
         /*
          * TODO Реализовать метод prepareMessage класса TcpSender
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        return "Hello world";
     }
 
     /**
@@ -42,11 +44,13 @@ public final class TcpSender {
      *
      * @return экземпля типа {@link SocketAddress}
      */
-    private static SocketAddress prepareAddress() {
+    private static SocketAddress prepareAddress() throws UnknownHostException {
         /*
          * TODO Реализовать метод prepareAddress класса TcpSender
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        InetAddress address = InetAddress.getLocalHost();
+        SocketAddress result = new InetSocketAddress(address, 1234); 
+        return result;
     }
 
     /**
@@ -63,7 +67,9 @@ public final class TcpSender {
         /*
          * TODO Реализовать метод connect класса TcpSender
          */
-        throw new UnsupportedOperationException("Not implemented yet!");
+        Socket result = new Socket();
+        result.connect(address);
+        return result;
     }
 
     /**
@@ -77,8 +83,20 @@ public final class TcpSender {
     private static void send(Socket socket, String message) throws IOException {
         /*
          * TODO Реализовать метод send класса TcpSender
-         */
-        throw new UnsupportedOperationException("Not implemented yet!");
+         */;
+        OutputStream stream = socket.getOutputStream();
+        PrintWriter writer = new PrintWriter(stream);
+        writer.write(message + "\r");
+        writer.flush();
+        System.out.println(message);
+    }
+    
+    private static String response(Socket socket) throws IOException{
+        InputStream stream = socket.getInputStream();
+        Reader reader = new InputStreamReader(stream);
+        BufferedReader bufferedReader = new BufferedReader(reader);
+        String line = bufferedReader.readLine();
+        return line;
     }
 
 }
